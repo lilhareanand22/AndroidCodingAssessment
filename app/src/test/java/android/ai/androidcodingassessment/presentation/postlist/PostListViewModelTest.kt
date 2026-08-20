@@ -7,40 +7,50 @@ import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class PostListViewModelTest {
 
+
+   // private val testDispatcher = UnconfinedTestDispatcher()
+
+    @get:Rule
+    val testDispatcher = MainTestDispatcher()
+
     private val getPostsUseCase: GetPostsUseCase = mockk()
     private lateinit var viewModel: PostListViewModel
-    private val testDispatcher = UnconfinedTestDispatcher()
 
-    @Before
-    fun setup() {
-        Dispatchers.setMain(testDispatcher)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
+//    @Before
+//    fun setup() {
+//        Dispatchers.setMain(testDispatcher)
+//    }
+//
+//    @After
+//    fun tearDown() {
+//        Dispatchers.resetMain()
+//    }
 
     @Test
-    fun `getPosts should update state with posts on success`() {
+    fun `getPosts should update state with posts on success`() = runTest{
         // Given
         val posts = listOf(Post(id=1,title= "title", body = "body", userId = 1))
         coEvery { getPostsUseCase() } returns Result.success(posts)
 
         // When
         viewModel = PostListViewModel(getPostsUseCase)
+
+        advanceUntilIdle()
 
         // Then
         val state = viewModel.state.value
@@ -50,7 +60,7 @@ class PostListViewModelTest {
     }
 
     @Test
-    fun `getPosts should update state with error on failure`() {
+    fun `getPosts should update state with error on failure`() = runTest {
         // Given
         val errorMessage = "Network error"
         coEvery { getPostsUseCase() } returns Result.failure(Exception(errorMessage))
@@ -58,6 +68,7 @@ class PostListViewModelTest {
         // When
         viewModel = PostListViewModel(getPostsUseCase)
 
+        advanceUntilIdle()
         // Then
         val state = viewModel.state.value
         assertFalse(state.isLoading)
