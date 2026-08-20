@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class postListViewModel @Inject constructor(
+class PostListViewModel @Inject constructor(
     private val getPostsUseCase: GetPostsUseCase
 ) : ViewModel() {
     private val  _state = mutableStateOf(PostListState())

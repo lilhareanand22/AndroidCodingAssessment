@@ -23,7 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun PostListScreen(
-    viewModel: postListViewModel = hiltViewModel()
+    viewModel: PostListViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.value
    Box(modifier = Modifier.fillMaxSize()) {

@@ -37,6 +37,12 @@ android {
     buildFeatures {
         compose = true
     }
+
+    testOptions {
+        unitTests.all {
+            it.useJUnitPlatform()
+        }
+    }
 }
 
 dependencies {
@@ -55,6 +61,9 @@ dependencies {
 
     // Hilt
     implementation(libs.hilt.android)
+    testImplementation(libs.junit.jupiter)
+    testRuntimeOnly(libs.junitPlatformLauncher)
+    testRuntimeOnly(libs.junitVintageEngine)
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
 
